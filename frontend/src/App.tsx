@@ -54,20 +54,25 @@ export default function App() {
       {/* Header / Navbar */}
       <header className="app-header">
         <div className="brand flex-align">
-          <span className="brand-logo">💡</span>
+          <span className="brand-logo" aria-hidden="true">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none">
+              <path d="M12 2 L22 20 H2 Z" fill="#ffffff" />
+              <path d="M12 2 L17 20 H7 Z" fill="#0f1529" />
+            </svg>
+          </span>
           <div>
             <h1>InsightLink</h1>
-            <p className="sub-title">Painel Executivo de Inovação & Desafios</p>
+            <p className="sub-title">Painel de desafios ENIAC</p>
           </div>
         </div>
 
         <div className="header-actions">
           <button className="btn btn-secondary" onClick={fetchData} title="Atualizar dados">
-            🔄 Atualizar
+            Atualizar
           </button>
           {projects.length > 0 && (
             <button className="btn btn-danger" onClick={handleClearAll} title="Limpar todos os registros">
-              🗑️ Limpar Tudo
+              Limpar tudo
             </button>
           )}
         </div>

@@ -57,18 +57,19 @@ export default function UploadPanel({ onImported }: UploadPanelProps) {
       <input
         ref={inputRef}
         type="file"
-        accept=".pdf,.xlsx,.xls"
+        accept=".pdf,.xlsx,.xls,.csv"
         multiple
         hidden
         onChange={(e: ChangeEvent<HTMLInputElement>) => handleFiles(e.target.files)}
       />
       <div className="upload-icon-pulse">
-        <span className="upload-icon">📥</span>
+        <span className="upload-icon">↑</span>
       </div>
       <div className="upload-text-group">
         <p className="upload-title">Importar dados do ENIAC Link+</p>
         <p className="upload-hint">
-          Arraste arquivos PDF ou planilhas (.xlsx) aqui, ou <span className="highlight">clique para navegar</span>
+          Arraste arquivos PDF, planilhas (.xlsx) ou o relatório CSV da plataforma, ou{' '}
+          <span className="highlight">clique para navegar</span>
         </p>
       </div>
       {loading && <div className="upload-spinner">Processando arquivos...</div>}

@@ -8,7 +8,7 @@ interface ChartsProps {
   summary: DashboardSummary | null;
 }
 
-const COLORS = ['#6366f1', '#06b6d4', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6', '#f97316'];
+const COLORS = ['#3b82f6', '#60a5fa', '#93c5fd', '#1d4ed8', '#818cf8', '#38bdf8', '#0ea5e9'];
 
 export default function Charts({ summary }: ChartsProps) {
   if (!summary) return null;
@@ -29,9 +29,9 @@ export default function Charts({ summary }: ChartsProps) {
         <ResponsiveContainer width="100%" height={280}>
           <BarChart data={summary.por_empresa}>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(225, 225, 225, 0.1)" />
-            <XAxis dataKey="nome" tick={{ fontSize: 11, fill: '#94a3b8' }} interval={0} angle={-15} textAnchor="end" height={50} />
-            <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#94a3b8' }} />
-            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#fff' }} />
+            <XAxis dataKey="nome" tick={{ fontSize: 11, fill: '#cbd5e1' }} interval={0} angle={-15} textAnchor="end" height={50} />
+            <YAxis allowDecimals={false} tick={{ fontSize: 11, fill: '#cbd5e1' }} />
+            <Tooltip contentStyle={{ backgroundColor: '#151c33', border: '1px solid rgba(148, 163, 184, 0.22)', borderRadius: '8px', color: '#fff' }} />
             <Bar dataKey="quantidade" fill="#6366f1" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
@@ -54,7 +54,7 @@ export default function Charts({ summary }: ChartsProps) {
                 <Cell key={`cell-cargo-${index}`} fill={COLORS[index % COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#fff' }} />
+            <Tooltip contentStyle={{ backgroundColor: '#151c33', border: '1px solid rgba(148, 163, 184, 0.22)', borderRadius: '8px', color: '#fff' }} />
           </PieChart>
         </ResponsiveContainer>
       </div>
@@ -78,7 +78,7 @@ export default function Charts({ summary }: ChartsProps) {
               ))}
             </Pie>
             <Legend verticalAlign="bottom" height={36} />
-            <Tooltip contentStyle={{ backgroundColor: '#1e293b', border: '1px solid #334155', borderRadius: '8px', color: '#fff' }} />
+            <Tooltip contentStyle={{ backgroundColor: '#151c33', border: '1px solid rgba(148, 163, 184, 0.22)', borderRadius: '8px', color: '#fff' }} />
           </PieChart>
         </ResponsiveContainer>
       </div>

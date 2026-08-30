@@ -210,10 +210,116 @@ def parse_xlsx(file_bytes: bytes, filename: str) -> list:
     return records
 
 
+# Cabeçalhos do "Relatório da Plataforma" (export CSV do ENIAC Link+) e para
+# qual campo do Record cada coluna mapeia. Colunas fora deste dicionário são
+# preservadas em `extras`.
+CSV_COLUMN_MAP = {
+    "postado": "postado",
+    "tipo": "classificacao",  # "real" / "ficticia" — não confundir com Record.tipo (Desafio/Projeto)
+    "empresa": "empresa",
+    "responsável": "proponente",
+    "responsavel": "proponente",
+    "e-mail": "email",
+    "email": "email",
+    "nro_de_projetos": "nro_de_projetos",
+    "projetos": "projetos",
+    "título do desafio": "titulo",
+    "titulo do desafio": "titulo",
+    "descrição do desafio": "descricao",
+    "descricao do desafio": "descricao",
+}
+
+
+def _read_csv_bytes(file_bytes: bytes) -> pd.DataFrame:
+    """Decodifica e localiza a linha de cabeçalho real do CSV exportado.
+
+    O export da plataforma vem com ';' como separador, encoding Latin-1
+    (Windows-1252) e uma primeira linha de título solta antes do cabeçalho
+    de colunas (ex: "RELATÓRIO DE DESAFIOS COM PROJETOS;;;;;;").
+    """
+    for encoding in ("utf-8-sig", "cp1252", "latin1"):
+        try:
+            text = file_bytes.decode(encoding)
+            break
+        except UnicodeDecodeError:
+            continue
+    else:
+        raise ValueError("Não foi possível decodificar o arquivo CSV.")
+
+    lines = text.splitlines()
+    header_idx = 0
+    for i, line in enumerate(lines[:5]):
+        if "POSTADO" in line.upper():
+            header_idx = i
+            break
+
+    csv_text = "\n".join(lines[header_idx:])
+    return pd.read_csv(io.StringIO(csv_text), sep=";", dtype=str, keep_default_na=False, engine="python")
+
+
+def parse_csv(file_bytes: bytes, filename: str) -> list:
+    df = _read_csv_bytes(file_bytes)
+    df.columns = [str(c).strip().lower() for c in df.columns]
+
+    records = []
+    for i, row in df.iterrows():
+        mapped = {}
+        extras = {}
+        for col, val in row.items():
+            val = (val or "").strip()
+            if not val:
+                continue
+            key = CSV_COLUMN_MAP.get(col)
+            if key:
+                mapped[key] = val
+            else:
+                extras[col] = val
+
+        descricao = mapped.get("descricao", "")
+        sections = _extract_sections(descricao) if descricao else {}
+
+        record = {
+            "id": str(uuid.uuid4()),
+            "origem_arquivo": filename,
+            "tipo": "Desafio",
+            "titulo": mapped.get("titulo") or f"Desafio sem título ({i + 1})",
+            "proponente": mapped.get("proponente", ""),
+            "email": mapped.get("email", ""),
+            "telefone": "",
+            "empresa": mapped.get("empresa", ""),
+            "cargo": "",
+            "mentor": "",
+            "objetivo": sections.get("objetivo", ""),
+            "contexto_limitacoes": sections.get("contexto_limitacoes", ""),
+            "requisitos_tecnicos": sections.get("requisitos_tecnicos", ""),
+            "restricoes": sections.get("restricoes", ""),
+            "entregaveis_sucesso": sections.get("entregaveis_sucesso", ""),
+            "texto_completo": _clean(descricao),
+            "palavras": len(descricao.split()) if descricao else 0,
+            "importado_em": datetime.utcnow().isoformat(),
+        }
+
+        if mapped.get("postado"):
+            extras["postado"] = mapped["postado"]
+        if mapped.get("classificacao"):
+            extras["classificacao"] = mapped["classificacao"]
+        if mapped.get("nro_de_projetos"):
+            extras["nro_de_projetos"] = mapped["nro_de_projetos"]
+        if mapped.get("projetos"):
+            extras["projetos"] = mapped["projetos"]
+
+        record["extras"] = extras
+        record["completude"] = _score_completude(record)
+        records.append(record)
+    return records
+
+
 def parse_file(filename: str, file_bytes: bytes):
     lower = filename.lower()
     if lower.endswith(".pdf"):
         return [parse_pdf(file_bytes, filename)]
     if lower.endswith(".xlsx") or lower.endswith(".xls"):
         return parse_xlsx(file_bytes, filename)
-    raise ValueError("Formato de arquivo não suportado. Envie um PDF ou uma planilha (.xlsx).")
+    if lower.endswith(".csv"):
+        return parse_csv(file_bytes, filename)
+    raise ValueError("Formato de arquivo não suportado. Envie um PDF, uma planilha (.xlsx) ou um CSV.")
