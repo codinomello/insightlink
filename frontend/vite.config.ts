@@ -11,7 +11,11 @@ export default defineConfig({
   server: {
     proxy: {
       "/api": {
-        target: "http://api:5000",// <-- Altere para a porta do seu backend
+        // Em desenvolvimento local (`npm run dev` fora do Docker), o backend
+        // roda em http://localhost:5000. Dentro do docker-compose, o serviço
+        // "web" recebe VITE_API_PROXY_TARGET=http://api:5000 (nome do
+        // serviço na rede interna do Compose) — ver docker-compose.yml.
+        target: process.env.VITE_API_PROXY_TARGET || "http://localhost:5000",
         changeOrigin: true,
       },
     },

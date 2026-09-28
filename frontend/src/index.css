@@ -445,3 +445,326 @@ tbody tr:hover { background: var(--surface-hover); }
   .kpi-grid { gap: 24px; }
   .kpi-value { font-size: 1.7rem; }
 }
+
+/* ==========================================================================
+   Autenticação (Login / Registro)
+   ========================================================================== */
+
+.auth-page-wrapper {
+  display: flex;
+  justify-content: center;
+}
+
+.auth-section {
+  width: 100%;
+  max-width: 560px;
+}
+
+.auth-hint {
+  font-size: 0.76rem;
+  color: var(--text-low);
+  margin: 4px 0 0;
+  line-height: 1.5;
+}
+
+.auth-hint code {
+  background: var(--bg-soft);
+  padding: 1px 6px;
+  border-radius: 4px;
+  color: var(--blue-light);
+}
+
+/* ==========================================================================
+   Form fields (compartilhado por Login, Perfil, Admin, Registro manual)
+   ========================================================================== */
+
+.form-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  flex: 1;
+}
+
+.form-field label {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--text-low);
+}
+
+.form-field input,
+.form-field select,
+.form-field textarea {
+  background: var(--bg-soft);
+  border: 1px solid var(--border-strong);
+  color: var(--text-hi);
+  font-family: var(--font);
+  font-size: 0.88rem;
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  outline: none;
+  width: 100%;
+  resize: vertical;
+}
+
+.form-field input:focus,
+.form-field select:focus,
+.form-field textarea:focus {
+  border-color: var(--blue-light);
+}
+
+.form-row {
+  display: flex;
+  gap: 14px;
+  flex-wrap: wrap;
+}
+
+.form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-top: 8px;
+}
+
+.inline-form {
+  display: flex;
+  gap: 12px;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  background: var(--bg-soft);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 18px;
+  margin-bottom: 20px;
+}
+
+.record-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.alert-success {
+  background: rgba(74, 222, 128, 0.12);
+  border: 1px solid rgba(74, 222, 128, 0.35);
+  color: #86efac;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+}
+
+/* ==========================================================================
+   Navbar: user chip + tabs
+   ========================================================================== */
+
+.user-chip {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 0.82rem;
+  color: var(--text-mid);
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--border-strong);
+}
+
+.role-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.role-admin { background: #f59e0b; }
+.role-user { background: #38bdf8; }
+
+.user-chip-role {
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-low);
+  padding-left: 6px;
+  border-left: 1px solid var(--border-strong);
+}
+
+.nav-tabs {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 28px;
+  flex-wrap: wrap;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 2px;
+}
+
+.nav-tab {
+  border: none;
+  background: transparent;
+  color: var(--text-low);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.8rem;
+  padding: 10px 16px;
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+}
+
+.nav-tab:hover { color: var(--text-mid); }
+
+.nav-tab.active {
+  color: var(--text-hi);
+  border-bottom-color: var(--blue-light);
+}
+
+/* ==========================================================================
+   Section headers (Admin / Perfil)
+   ========================================================================== */
+
+.section-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.section-title {
+  font-size: 1.1rem;
+  margin: 0 0 4px;
+}
+
+.section-subtitle {
+  margin: 0;
+  color: var(--text-low);
+  font-size: 0.84rem;
+}
+
+.row-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+}
+
+.badge-ok { background: rgba(74, 222, 128, 0.12); color: #4ade80; border-color: rgba(74, 222, 128, 0.3); }
+.badge-off { background: rgba(148, 163, 184, 0.12); color: var(--text-low); border-color: var(--border-strong); }
+
+/* ==========================================================================
+   Perfil (área do usuário)
+   ========================================================================== */
+
+.profile-section { max-width: 640px; }
+
+.profile-meta {
+  display: flex;
+  gap: 32px;
+  padding: 18px 0 26px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+  flex-wrap: wrap;
+}
+
+.profile-meta p {
+  margin: 2px 0 0;
+  font-size: 0.9rem;
+  color: var(--text-hi);
+  font-weight: 600;
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.profile-divider {
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-low);
+  border-top: 1px solid var(--border);
+  padding-top: 18px;
+  margin-top: 4px;
+}
+
+/* ==========================================================================
+   Análises avançadas: grid, heatmap, subtítulos
+   ========================================================================== */
+
+.analytics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+}
+
+.chart-card-wide {
+  grid-column: 1 / -1;
+}
+
+.chart-subtitle {
+  font-size: 0.78rem;
+  color: var(--text-mid);
+  margin: -6px 0 14px;
+}
+
+.chart-empty-msg {
+  color: var(--text-low);
+  font-size: 0.85rem;
+  padding: 24px 0;
+  text-align: center;
+}
+
+.text-positive { color: #4ade80; }
+.text-negative { color: #f87171; }
+
+.heatmap-wrapper { overflow-x: auto; }
+
+.heatmap-table {
+  border-collapse: separate;
+  border-spacing: 3px;
+  width: 100%;
+}
+
+.heatmap-table th {
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--text-low);
+  padding: 4px 6px;
+  text-transform: none;
+  border-bottom: none;
+  max-width: 90px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heatmap-row-label {
+  text-align: right;
+  max-width: 140px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.heatmap-cell {
+  text-align: center;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 6px;
+  padding: 10px 6px;
+  min-width: 42px;
+}
+
+/* ==========================================================================
+   Responsive extras
+   ========================================================================== */
+
+@media (max-width: 640px) {
+  .nav-tabs { gap: 2px; }
+  .nav-tab { padding: 8px 10px; font-size: 0.74rem; }
+  .user-chip { display: none; }
+  .analytics-grid { grid-template-columns: 1fr; }
+}

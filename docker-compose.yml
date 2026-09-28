@@ -9,25 +9,45 @@ services:
       - "5432:5432"
     volumes:
       - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U insightlink -d insightlink"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   redis:
     image: redis:7
     ports:
       - "6379:6379"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
 
   api:
     build: ./backend
     environment:
-      DATABASE_URL: postgresql://insightlink:insightlink@db:5432/insightlink
+      # Driver psycopg2 explícito no esquema (evita que o SQLAlchemy tente
+      # resolver o driver "psycopg" v3, que não está instalado na imagem).
+      DATABASE_URL: postgresql+psycopg2://insightlink:insightlink@db:5432/insightlink
       REDIS_URL: redis://redis:6379
+      JWT_SECRET_KEY: troque-esta-chave-em-producao
+      DEFAULT_ADMIN_USERNAME: admin
+      DEFAULT_ADMIN_PASSWORD: admin123
+      DEFAULT_ADMIN_EMAIL: admin@insightlink.local
     ports:
       - "5000:5000"
     depends_on:
-      - db
-      - redis
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
 
   web:
     build: ./frontend
+    environment:
+      VITE_API_PROXY_TARGET: http://api:5000
     ports:
       - "5173:5173"
     volumes:
