@@ -6,6 +6,7 @@ o resto da aplicação possa fazer `from models import User, Record`.
 """
 from models.record import Record
 from models.user import User
+from models.activity import UploadLog, LoginLog
 from core.utils import gen_uuid
 
-__all__ = ["Record", "User", "gen_uuid"]
+__all__ = ["Record", "User", "UploadLog", "LoginLog", "gen_uuid"]

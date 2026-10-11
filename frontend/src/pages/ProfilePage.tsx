@@ -66,11 +66,11 @@ export default function ProfilePage() {
         </div>
         <div>
           <span className="kpi-label">Conta criada em</span>
-          <p>{user.criado_em ? new Date(user.criado_em).toLocaleDateString('pt-BR') : '—'}</p>
+          <p>{user.criado_em ? new Date(user.criado_em + 'Z').toLocaleDateString('pt-BR') : '—'}</p>
         </div>
         <div>
           <span className="kpi-label">Último login</span>
-          <p>{user.ultimo_login ? new Date(user.ultimo_login).toLocaleString('pt-BR') : 'Este é seu primeiro acesso'}</p>
+          <p>{user.ultimo_login ? new Date(user.ultimo_login + 'Z').toLocaleString('pt-BR') : 'Este é seu primeiro acesso'}</p>
         </div>
       </div>
 

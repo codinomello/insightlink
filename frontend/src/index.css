@@ -768,3 +768,70 @@ tbody tr:hover { background: var(--surface-hover); }
   .user-chip { display: none; }
   .analytics-grid { grid-template-columns: 1fr; }
 }
+
+/* ==========================================================================
+   Atividade (uploads, usuários online, logins) + toasts
+   ========================================================================== */
+
+.kpi-hint { font-size: 0.72rem; color: var(--text-low); }
+.kpi-green .kpi-value { color: #4ade80; }
+.kpi-warn .kpi-value { color: #fbbf24; }
+
+.sub-tabs {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.sub-tab {
+  border: 1px solid var(--border-strong);
+  background: transparent;
+  color: var(--text-mid);
+  font-family: var(--font);
+  font-weight: 700;
+  font-size: 0.76rem;
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+}
+.sub-tab:hover { color: var(--text-hi); }
+.sub-tab.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+
+.badge-err { background: rgba(248, 113, 113, 0.12); color: #f87171; border-color: rgba(248, 113, 113, 0.35); }
+
+.cell-sub { font-size: 0.74rem; color: var(--text-low); margin-top: 2px; max-width: 280px; }
+.cell-ua { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--text-low); font-size: 0.78rem; }
+.table-empty { text-align: center; padding: 28px; color: var(--text-low); }
+
+.presence { display: inline-flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--text-mid); }
+.presence-dot { width: 9px; height: 9px; border-radius: 50%; background: #475569; }
+.presence-dot.online { background: #4ade80; box-shadow: 0 0 0 4px rgba(74, 222, 128, 0.18); }
+
+.toast-stack {
+  position: fixed;
+  right: 20px;
+  bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  z-index: 1000;
+}
+.toast {
+  min-width: 240px;
+  max-width: 360px;
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-hi);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+  animation: toast-in 0.2s ease-out;
+}
+.toast-success { border-left: 4px solid #4ade80; }
+.toast-error { border-left: 4px solid #f87171; }
+.toast-info { border-left: 4px solid var(--blue-light); }
+@keyframes toast-in { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }

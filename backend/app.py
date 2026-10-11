@@ -18,6 +18,7 @@ from core.security import init_jwt
 
 from routes.auth_routes import auth_bp
 from routes.admin_routes import admin_bp
+from routes.activity_routes import activity_bp
 from routes.records_routes import records_bp
 from routes.dashboard_routes import dashboard_bp
 
@@ -40,6 +41,7 @@ def create_app() -> Flask:
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(admin_bp)
+    app.register_blueprint(activity_bp)
     app.register_blueprint(records_bp)
     app.register_blueprint(dashboard_bp)
 

@@ -1,10 +1,13 @@
 import { useEffect, useState, type FormEvent } from 'react';
 import * as api from '../lib/api';
 import { useAuth } from '../context/AuthContext';
+import { useToast } from '../context/ToastContext';
 import type { AuthUser } from '../types';
 
 export default function UsersAdminPage() {
   const { user: me } = useAuth();
+  const { notify } = useToast();
+  const [search, setSearch] = useState('');
   const [users, setUsers] = useState<AuthUser[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -49,9 +52,10 @@ export default function UsersAdminPage() {
       await api.createUser({ nome, username: username.toLowerCase(), email: email || undefined, password, role });
       resetForm();
       setShowForm(false);
+      notify('Usuário criado com sucesso.', 'success');
       await fetchUsers();
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Erro ao criar usuário.');
+      notify(err.response?.data?.error || 'Erro ao criar usuário.', 'error');
     } finally {
       setSaving(false);
     }
@@ -61,18 +65,20 @@ export default function UsersAdminPage() {
     const novoRole = u.role === 'admin' ? 'user' : 'admin';
     try {
       await api.updateUser(u.id, { role: novoRole });
+      notify(`${u.nome} agora é ${novoRole === 'admin' ? 'administrador' : 'usuário comum'}.`, 'success');
       await fetchUsers();
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Erro ao alterar papel do usuário.');
+      notify(err.response?.data?.error || 'Erro ao alterar papel do usuário.', 'error');
     }
   };
 
   const handleToggleAtivo = async (u: AuthUser) => {
     try {
       await api.updateUser(u.id, { ativo: !u.ativo });
+      notify(`Conta de ${u.nome} ${u.ativo ? 'desativada' : 'ativada'}.`, 'success');
       await fetchUsers();
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Erro ao alterar status do usuário.');
+      notify(err.response?.data?.error || 'Erro ao alterar status do usuário.', 'error');
     }
   };
 
@@ -81,9 +87,9 @@ export default function UsersAdminPage() {
     if (!novaSenha) return;
     try {
       await api.updateUser(u.id, { password: novaSenha });
-      alert('Senha atualizada com sucesso.');
+      notify('Senha atualizada com sucesso.', 'success');
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Erro ao redefinir senha.');
+      notify(err.response?.data?.error || 'Erro ao redefinir senha.', 'error');
     }
   };
 
@@ -91,18 +97,24 @@ export default function UsersAdminPage() {
     if (!confirm(`Remover o usuário "${u.username}"? Esta ação não pode ser desfeita.`)) return;
     try {
       await api.deleteUser(u.id);
+      notify('Usuário removido.', 'success');
       await fetchUsers();
     } catch (err: any) {
-      alert(err.response?.data?.error || 'Erro ao remover usuário.');
+      notify(err.response?.data?.error || 'Erro ao remover usuário.', 'error');
     }
   };
+
+  const q = search.trim().toLowerCase();
+  const visibleUsers = users.filter(
+    (u) => !q || `${u.nome} ${u.username} ${u.email ?? ''}`.toLowerCase().includes(q)
+  );
 
   return (
     <div className="table-section">
       <div className="section-header">
         <div>
           <h2 className="section-title">Gestão de Usuários</h2>
-          <p className="section-subtitle">Crie contas, promova administradores e controle o acesso à plataforma.</p>
+          <p className="section-subtitle">Somente administradores criam contas. Promova administradores, ative/desative acessos e redefina senhas.</p>
         </div>
         <button className="btn btn-secondary" onClick={() => setShowForm((v) => !v)}>
           {showForm ? 'Cancelar' : '+ Novo usuário'}
@@ -142,6 +154,20 @@ export default function UsersAdminPage() {
 
       {error && <div className="alert-error">{error}</div>}
 
+      <div className="table-filters">
+        <div className="search-input-wrapper">
+          <input
+            type="text"
+            placeholder="Pesquisar por nome, usuário ou e-mail..."
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+          />
+        </div>
+        <span className="section-subtitle">
+          {users.filter((u) => u.online).length} online · {users.length} no total
+        </span>
+      </div>
+
       <div className="table-wrapper">
         <table>
           <thead>
@@ -158,10 +184,10 @@ export default function UsersAdminPage() {
           <tbody>
             {loading ? (
               <tr><td colSpan={7} style={{ textAlign: 'center', padding: '24px', color: '#94a3b8' }}>Carregando...</td></tr>
-            ) : users.length === 0 ? (
+            ) : visibleUsers.length === 0 ? (
               <tr><td colSpan={7} style={{ textAlign: 'center', padding: '24px', color: '#94a3b8' }}>Nenhum usuário encontrado.</td></tr>
             ) : (
-              users.map((u) => (
+              visibleUsers.map((u) => (
                 <tr key={u.id}>
                   <td style={{ fontWeight: 500 }}>{u.nome}</td>
                   <td>{u.username}</td>
@@ -172,10 +198,16 @@ export default function UsersAdminPage() {
                     </span>
                   </td>
                   <td>
-                    <span className={`badge ${u.ativo ? 'badge-ok' : 'badge-off'}`}>{u.ativo ? 'Ativo' : 'Inativo'}</span>
+                    {!u.ativo ? (
+                      <span className="badge badge-off">Inativo</span>
+                    ) : u.online ? (
+                      <span className="presence"><span className="presence-dot online" />Online</span>
+                    ) : (
+                      <span className="presence"><span className="presence-dot" />Offline</span>
+                    )}
                   </td>
                   <td style={{ fontSize: '0.8rem', color: '#94a3b8' }}>
-                    {u.ultimo_login ? new Date(u.ultimo_login).toLocaleString('pt-BR') : 'Nunca'}
+                    {u.ultimo_login ? new Date(u.ultimo_login + 'Z').toLocaleString('pt-BR') : 'Nunca'}
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <div className="row-actions">

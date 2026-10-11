@@ -10,10 +10,10 @@ Endpoints de dados (desafios/projetos):
   DELETE /api/projects/<id>     -> remove um registro (admin)
   DELETE /api/projects          -> remove todos os registros (admin)
 """
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, g
 
 from extensions import db
-from models import Record, gen_uuid
+from models import Record, UploadLog, gen_uuid
 from core.security import admin_required, login_required
 from core.cache import cache_invalidate_all
 from services.file_parser import parse_file, _score_completude
@@ -39,6 +39,24 @@ def _recalculate_texto_e_completude(payload: dict) -> None:
     payload["completude"] = _score_completude(payload)
 
 
+def _log_upload(filename, size, imported, status, message=None):
+    """Registra a tentativa de importação na trilha de auditoria."""
+    user = g.current_user
+    ext = filename.rsplit(".", 1)[-1].lower() if "." in filename else ""
+    db.session.add(UploadLog(
+        user_id=user.id,
+        username=user.username,
+        nome=user.nome,
+        arquivo=filename[:255],
+        formato=ext[:10],
+        tamanho_bytes=size,
+        registros_importados=imported,
+        status=status,
+        mensagem=(message or "")[:500] or None,
+    ))
+    db.session.commit()
+
+
 @records_bp.post("/upload")
 @admin_required
 def upload():
@@ -49,16 +67,20 @@ def upload():
     if file.filename == "":
         return jsonify({"error": "Nome de arquivo vazio."}), 400
 
+    content = file.read()
     try:
-        parsed = parse_file(file.filename, file.read())
+        parsed = parse_file(file.filename, content)
     except ValueError as e:
+        _log_upload(file.filename, len(content), 0, "erro", str(e))
         return jsonify({"error": str(e)}), 400
     except Exception as e:
+        _log_upload(file.filename, len(content), 0, "erro", str(e))
         return jsonify({"error": f"Falha ao processar o arquivo: {e}"}), 500
 
     novos = [Record.from_parsed(r) for r in parsed]
     db.session.bulk_save_objects(novos)
     db.session.commit()
+    _log_upload(file.filename, len(content), len(parsed), "sucesso")
     cache_invalidate_all()
 
     return jsonify({"imported": len(parsed), "records": parsed}), 201

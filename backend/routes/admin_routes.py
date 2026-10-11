@@ -9,8 +9,7 @@ listar, criar, editar papel/status e remover usuários da plataforma.
   PUT    /api/admin/users/<id>   -> edita nome/papel/status/senha
   DELETE /api/admin/users/<id>   -> remove um usuário
 """
-from flask import Blueprint, request, jsonify
-from flask_jwt_extended import get_jwt_identity
+from flask import Blueprint, request, jsonify, g
 
 from core.security import admin_required
 from extensions import db
@@ -62,7 +61,7 @@ def update_user(user_id):
         return jsonify({"error": "Usuário não encontrado."}), 404
 
     data = request.get_json(silent=True) or {}
-    is_self = user.id == get_jwt_identity()
+    is_self = user.id == g.current_user.id
 
     if is_self and data.get("role") == "user":
         return jsonify({"error": "Você não pode remover seu próprio papel de administrador."}), 400
@@ -92,7 +91,7 @@ def update_user(user_id):
 @admin_bp.delete("/users/<user_id>")
 @admin_required
 def delete_user(user_id):
-    if user_id == get_jwt_identity():
+    if user_id == g.current_user.id:
         return jsonify({"error": "Você não pode remover sua própria conta."}), 400
     user = User.query.get(user_id)
     if not user:

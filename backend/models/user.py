@@ -6,7 +6,7 @@ Usuário da plataforma. Dois papéis:
     e gerenciar outros usuários).
   - "user": acesso de leitura ao dashboard, gráficos e relatórios.
 """
-from datetime import datetime
+from datetime import datetime, timedelta
 
 from werkzeug.security import generate_password_hash, check_password_hash
 
@@ -26,6 +26,17 @@ class User(db.Model):
     ativo = db.Column(db.Boolean, default=True, nullable=False)
     criado_em = db.Column(db.DateTime, default=datetime.utcnow)
     ultimo_login = db.Column(db.DateTime, nullable=True)
+    ultima_atividade = db.Column(db.DateTime, nullable=True)
+
+    # Janela (em minutos) em que um usuário sem novas requisições ainda
+    # é considerado "online".
+    ONLINE_WINDOW_MINUTES = 5
+
+    @property
+    def online(self) -> bool:
+        if not self.ultima_atividade or not self.ativo:
+            return False
+        return (datetime.utcnow() - self.ultima_atividade) <= timedelta(minutes=self.ONLINE_WINDOW_MINUTES)
 
     def set_password(self, password: str) -> None:
         self.password_hash = generate_password_hash(password)
@@ -43,4 +54,6 @@ class User(db.Model):
             "ativo": self.ativo,
             "criado_em": self.criado_em.isoformat() if self.criado_em else None,
             "ultimo_login": self.ultimo_login.isoformat() if self.ultimo_login else None,
+            "ultima_atividade": self.ultima_atividade.isoformat() if self.ultima_atividade else None,
+            "online": self.online,
         }

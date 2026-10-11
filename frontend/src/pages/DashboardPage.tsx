@@ -12,19 +12,23 @@ import UploadPanel from '../components/records/UploadPanel';
 import ProjectsTable from '../components/records/ProjectsTable';
 import UsersAdminPage from './UsersAdminPage';
 import ProfilePage from './ProfilePage';
+import ActivityPage from './ActivityPage';
+import { useToast } from '../context/ToastContext';
 
-type Tab = 'dashboard' | 'analytics' | 'records' | 'users' | 'profile';
+type Tab = 'dashboard' | 'analytics' | 'records' | 'activity' | 'users' | 'profile';
 
 const ALL_TABS: (NavTabItem<Tab> & { adminOnly?: boolean })[] = [
   { id: 'dashboard', label: 'Dashboard' },
   { id: 'analytics', label: 'Análises Avançadas' },
   { id: 'records', label: 'Registros' },
+  { id: 'activity', label: 'Atividade', adminOnly: true },
   { id: 'users', label: 'Usuários', adminOnly: true },
   { id: 'profile', label: 'Minha Conta' },
 ];
 
 export default function DashboardPage() {
   const { isAdmin, logout } = useAuth();
+  const { notify } = useToast();
   const [tab, setTab] = useState<Tab>('dashboard');
   const [summary, setSummary] = useState<DashboardSummary | null>(null);
   const [analytics, setAnalytics] = useState<AnalyticsData | null>(null);
@@ -76,9 +80,10 @@ export default function DashboardPage() {
     }
     try {
       await clearProjects();
-      await handleRefresh();
+      handleRefresh();
+      notify('Todos os registros foram removidos.', 'success');
     } catch (err: any) {
-      alert('Erro ao apagar registros: ' + (err.response?.data?.error || err.message));
+      notify('Erro ao apagar registros: ' + (err.response?.data?.error || err.message), 'error');
     }
   };
 
@@ -137,6 +142,8 @@ export default function DashboardPage() {
         {tab === 'records' && (
           <ProjectsTable projects={projects} onChanged={fetchData} isAdmin={isAdmin} />
         )}
+
+        {tab === 'activity' && isAdmin && <ActivityPage />}
 
         {tab === 'users' && isAdmin && <UsersAdminPage />}
 

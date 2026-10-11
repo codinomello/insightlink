@@ -7,7 +7,6 @@ interface AuthContextValue {
   loading: boolean;
   isAdmin: boolean;
   login: (username: string, password: string) => Promise<void>;
-  register: (nome: string, username: string, password: string, email?: string) => Promise<void>;
   logout: () => void;
   refreshMe: () => Promise<void>;
   setUser: (user: AuthUser) => void;
@@ -55,12 +54,6 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     setUserState(res.data.user);
   }, []);
 
-  const register = useCallback(async (nome: string, username: string, password: string, email?: string) => {
-    const res = await api.register({ nome, username, password, email });
-    api.setAuthToken(res.data.token);
-    setUserState(res.data.user);
-  }, []);
-
   const refreshMe = useCallback(async () => {
     const res = await api.getMe();
     setUserState(res.data);
@@ -72,12 +65,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       loading,
       isAdmin: user?.role === 'admin',
       login,
-      register,
       logout,
       refreshMe,
       setUser: setUserState,
     }),
-    [user, loading, login, register, logout, refreshMe]
+    [user, loading, login, logout, refreshMe]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
