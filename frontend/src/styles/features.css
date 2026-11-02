@@ -1,0 +1,39 @@
+/* Telas específicas: login e perfil */
+.auth { min-height: 100dvh; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); }
+.auth-aside {
+  position: relative;
+  overflow: hidden;
+  padding: 40px 56px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background: var(--brand-bg);
+  color: var(--brand-fg);
+}
+.auth-aside .brand { color: inherit; }
+.auth-aside .brand-mark { background: rgba(255, 255, 255, 0.16); box-shadow: none; }
+.auth-aside h1 { position: relative; font-family: var(--serif); font-weight: 400; font-size: clamp(40px, 5vw, 64px); line-height: 1.02; letter-spacing: -0.02em; max-width: 14ch; }
+.auth-aside p { position: relative; color: rgba(255, 255, 255, 0.74); margin-top: 18px; max-width: 42ch; font-size: 15.5px; }
+.auth-aside small { position: relative; color: rgba(255, 255, 255, 0.55); font-size: 12.5px; }
+.auth-watermark { position: absolute; right: -90px; bottom: -110px; width: 520px; height: 520px; color: #fff; opacity: 0.06; pointer-events: none; }
+.auth-main { display: flex; align-items: center; justify-content: center; padding: 40px 28px; }
+.auth-card { width: min(380px, 100%); }
+.auth-card h2 { font-size: 22px; font-weight: 600; letter-spacing: -0.015em; }
+.auth-card > p { color: var(--text-2); margin-top: 6px; }
+.auth-form { display: flex; flex-direction: column; gap: 16px; margin-top: 26px; }
+.auth-note { color: var(--text-3); font-size: 12.5px; margin-top: 4px; }
+.input-wrap { position: relative; }
+.input-wrap .input { padding-right: 40px; }
+.input-wrap .icon-btn { position: absolute; right: 2px; top: 2px; width: 34px; height: 34px; }
+.auth-mobile-brand { display: none; }
+
+.profile-grid { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 16px; align-items: start; }
+.identity { display: flex; flex-direction: column; gap: 16px; padding: 22px; }
+.identity-top { display: flex; align-items: center; gap: 14px; }
+.identity-top strong { display: block; font-size: 16px; font-weight: 600; }
+.identity-top span { color: var(--text-3); font-size: 13px; }
+.identity .kv { grid-template-columns: 96px 1fr; }
+.form-section { display: flex; flex-direction: column; gap: 16px; }
+.form-section + .form-section { padding-top: 20px; margin-top: 4px; border-top: 1px solid var(--line); }
+.form-section h3 { font-size: 13.5px; font-weight: 600; }
+.form-actions { display: flex; justify-content: flex-end; gap: 10px; }

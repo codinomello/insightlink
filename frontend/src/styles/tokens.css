@@ -1,0 +1,97 @@
+/* ==========================================================================
+   Design tokens — azul como cor principal.
+   Neutros com leve tom azulado, um único acento (azul) e uma paleta de
+   gráficos que começa pelo azul. Tema claro/escuro via [data-theme].
+   ========================================================================== */
+
+:root,
+:root[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #080b12;
+  --bg-elev: #0c1019;
+  --panel: #0f1420;
+  --panel-2: #151c2b;
+  --hover: rgba(122, 162, 255, 0.06);
+  --line: rgba(140, 165, 220, 0.11);
+  --line-2: rgba(140, 165, 220, 0.2);
+
+  --text: #e9eefb;
+  --text-2: #a1abc3;
+  --text-3: #6c7995;
+
+  /* azul */
+  --accent: #6b9bff;            /* texto/ícones/realces sobre fundo escuro */
+  --accent-ink: #3f6ff2;        /* preenchimento de botões e marcas */
+  --accent-ink-hover: #5683ff;
+  --on-accent: #ffffff;
+  --accent-soft: rgba(91, 140, 255, 0.14);
+  --accent-ring: rgba(91, 140, 255, 0.35);
+
+  --pos: #4cc38a;
+  --pos-soft: rgba(76, 195, 138, 0.13);
+  --neg: #f0646e;
+  --neg-soft: rgba(240, 100, 110, 0.13);
+
+  /* séries de gráfico: azul primeiro */
+  --c1: #5b8cff;
+  --c2: #38bdf8;
+  --c3: #8b8cf6;
+  --c4: #34d3b0;
+  --c5: #f5b84c;
+  --c6: #f472b6;
+
+  --brand-bg: #0d1a3d;
+  --brand-fg: #f3f6ff;
+  --shadow-pop: 0 20px 50px -14px rgba(0, 0, 0, 0.7), 0 0 0 1px var(--line-2);
+  --shadow-panel: none;
+}
+
+:root[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f2f5fb;
+  --bg-elev: #ffffff;
+  --panel: #ffffff;
+  --panel-2: #eef2f9;
+  --hover: rgba(30, 64, 175, 0.045);
+  --line: rgba(20, 40, 90, 0.09);
+  --line-2: rgba(20, 40, 90, 0.17);
+
+  --text: #0e1627;
+  --text-2: #49566e;
+  --text-3: #8591a8;
+
+  --accent: #2457e6;
+  --accent-ink: #2457e6;
+  --accent-ink-hover: #1b47c9;
+  --on-accent: #ffffff;
+  --accent-soft: rgba(36, 87, 230, 0.09);
+  --accent-ring: rgba(36, 87, 230, 0.28);
+
+  --pos: #15935c;
+  --pos-soft: rgba(21, 147, 92, 0.11);
+  --neg: #d6404c;
+  --neg-soft: rgba(214, 64, 76, 0.1);
+
+  --c1: #2f64f0;
+  --c2: #0ea5d9;
+  --c3: #6366f1;
+  --c4: #0f9f7a;
+  --c5: #d98a10;
+  --c6: #d6468a;
+
+  --brand-bg: #1c47d8;
+  --brand-fg: #ffffff;
+  --shadow-pop: 0 20px 48px -16px rgba(20, 40, 100, 0.32), 0 0 0 1px var(--line-2);
+  --shadow-panel: 0 1px 2px rgba(16, 30, 70, 0.05);
+}
+
+:root {
+  --sans: 'Geist Variable', 'Geist', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --serif: 'Geist Variable', 'Iowan Old Style', 'Palatino Linotype', Georgia, serif;
+
+  --r: 14px;
+  --r-sm: 9px;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+  --topbar-h: 60px;
+  --pad: 32px;
+}

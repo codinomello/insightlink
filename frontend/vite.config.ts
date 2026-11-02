@@ -1,23 +1,22 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
-import tailwindcss from '@tailwindcss/vite'
+import { fileURLToPath, URL } from 'node:url';
+import { defineConfig } from 'vite';
+import react from '@vitejs/plugin-react';
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    react(),
-    tailwindcss()
-  ],
+  plugins: [react()],
+  resolve: {
+    // `@/…` aponta para `src/…` (espelha o "paths" do tsconfig.app.json)
+    alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
+  },
   server: {
     proxy: {
-      "/api": {
-        // Em desenvolvimento local (`npm run dev` fora do Docker), o backend
-        // roda em http://localhost:5000. Dentro do docker-compose, o serviço
-        // "web" recebe VITE_API_PROXY_TARGET=http://api:5000 (nome do
-        // serviço na rede interna do Compose) — ver docker-compose.yml.
-        target: process.env.VITE_API_PROXY_TARGET || "http://localhost:5000",
+      '/api': {
+        // Local (`npm run dev` fora do Docker): backend em http://localhost:5000.
+        // No docker-compose o serviço "web" recebe VITE_API_PROXY_TARGET=http://api:5000.
+        target: process.env.VITE_API_PROXY_TARGET || 'http://localhost:5000',
         changeOrigin: true,
       },
     },
   },
-})
+});
